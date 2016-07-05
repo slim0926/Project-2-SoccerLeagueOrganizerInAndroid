@@ -1,0 +1,97 @@
+package com.teamtreehouse;
+
+import com.teamtreehouse.model.Player;
+import com.teamtreehouse.model.Team;
+import com.teamtreehouse.model.Teams;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+
+public class Prompter {
+  private Map<String, String> mMenu;
+  private Team mTeam;
+  private BufferedReader mReader;
+  private Teams mTeams;
+  
+  public Prompter() {
+    mMenu = new HashMap<>();
+    mMenu.put("create", "Create a new team");
+    mMenu.put("add", "Add a player to a team");
+    mMenu.put("remove", "Remove a player from a team");
+    mMenu.put("quit", "Quit the program");
+    
+    mReader = new BufferedReader(new InputStreamReader(System.in));
+    mTeams = new Teams();
+  }
+  
+  public String promptAction() throws IOException {
+    System.out.println("\nHere is a menu of your options: ");
+    
+    for (Map.Entry<String, String> option : mMenu.entrySet()) {
+      System.out.printf("\t%s - %s %n", option.getKey(), option.getValue());
+    }
+    
+    System.out.print("Please make your choice: ");
+    String choice = mReader.readLine();
+    return choice.trim().toLowerCase();
+  }
+  
+  public void run() {
+    String choice = "";
+    String teamName = "";
+    String coach = "";
+    
+    do {
+      try {
+        choice = promptAction();
+      
+        switch(choice) {
+          case "create":
+            System.out.print("\nWhat is the name of your team? ");
+            teamName = mReader.readLine();
+            System.out.print("What is the name of your coach? ");
+            coach = mReader.readLine();
+      
+            mTeam = new Team(teamName, coach);
+            mTeams.addTeam(mTeam);
+          
+            break;
+          case "add":
+            System.out.println("You may add players to the following teams: ");
+            for (Team team : mTeams.getTeams()) {
+              System.out.println(team.getTeamName());
+            }
+            System.out.print("Please make your choice: ");
+            
+            Player playerToAdd = new Player("Joe", "Smith", 42, true);
+            mTeam.addPlayer(playerToAdd);
+            break;
+          case "remove":
+            Player playerToRemove = new Player("Joe", "Smith", 42, true);
+            
+            for(Player player : mTeam.getPlayers()) {
+              if (player.equals(playerToRemove)) {
+                mTeam.removePlayer(player);
+              }
+            }    
+              
+            break;
+          case "quit":
+            break;
+          default:
+            System.out.printf("%nYou have entered an invalid choice. Try again. %n");
+        }
+      } catch (IOException ioe) {
+        System.out.println("Something went wrong with input");
+        ioe.printStackTrace();
+      }
+    } while (!choice.equals("quit"));
+         
+    System.out.printf("%s, %s %n", mTeam.getTeamName(), mTeam.getCoach());
+    
+  }
+}
