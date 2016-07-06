@@ -169,9 +169,6 @@ public class Prompter {
 
     do {
       try {
-        //Testing...
-        System.out.println("Number of players: " + mPlayerSet.size());
-        System.out.println("mCounter: " + mCounter);
         choice = promptAction();
 
         switch (choice) {
